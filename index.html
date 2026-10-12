@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14231f">
+  <meta name="description" content="개인용 다이어트 및 풀마라톤 훈련 기록 앱">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <title>RUN & FIT</title>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">FULL MARATHON PROJECT</p>
+      <h1>RUN <span>&</span> FIT</h1>
+    </div>
+    <button class="icon-btn" id="exportBtn" aria-label="데이터 백업" title="데이터 백업">⇩</button>
+  </header>
+
+  <main>
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <div class="hero-head">
+          <div><p class="muted">2027년 2월 28일 목표</p><h2>꾸준함이 기록이 된다.</h2></div>
+          <span class="runner">🏃</span>
+        </div>
+        <div class="weight-row">
+          <div><span class="muted">현재 체중</span><strong id="homeWeight">88.0 <small>kg</small></strong></div>
+          <div class="goal"><span class="muted">목표 체중</span><strong>75.0 <small>kg</small></strong></div>
+        </div>
+        <div class="progress-track"><div id="weightProgress" class="progress-fill"></div></div>
+        <div class="progress-caption"><span id="weightProgressText">목표까지 13.0kg</span><span id="daysLeft">목표일까지 계산 중</span></div>
+      </div>
+
+      <div class="section-heading"><h2>오늘의 요약</h2><span id="todayLabel" class="muted"></span></div>
+      <div class="stats-grid">
+        <article class="stat-card"><span class="stat-icon">🍽️</span><p>섭취 열량</p><strong id="homeCalories">0 <small>/ 2,300 kcal</small></strong><div class="mini-track"><div id="calorieBar"></div></div></article>
+        <article class="stat-card"><span class="stat-icon">🥚</span><p>단백질</p><strong id="homeProtein">0 <small>/ 140 g</small></strong><div class="mini-track"><div id="proteinBar"></div></div></article>
+        <article class="stat-card"><span class="stat-icon">👟</span><p>오늘 러닝</p><strong id="homeRun">0 <small>km</small></strong><span class="subline" id="homeRunTime">운동 기록 없음</span></article>
+        <article class="stat-card"><span class="stat-icon">☑️</span><p>오늘 체크</p><strong id="homeChecks">0 <small>/ 4 완료</small></strong><span class="subline">식단 · 운동 · 단백질 · 체중</span></article>
+      </div>
+
+      <div class="section-heading"><h2>오늘의 체크리스트</h2><span class="muted">날짜별 저장</span></div>
+      <div class="check-card" id="homeChecklist"></div>
+      <div class="section-heading"><h2>이번 달 진행률</h2><span id="monthLabel" class="muted"></span></div>
+      <div class="month-card">
+        <div class="month-metric"><span>월간 러닝</span><strong id="monthKm">0 km</strong></div>
+        <div class="month-metric"><span>체중 변화</span><strong id="monthWeightChange">기록 필요</strong></div>
+        <div class="month-metric"><span>이번 주 러닝</span><strong id="weekKm">0 km</strong></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-food">
+      <div class="page-title"><p class="eyebrow">NUTRITION LOG</p><h2>식단 기록</h2><p class="muted">먹은 음식과 영양을 기록해요.</p></div>
+      <div class="panel">
+        <label for="foodDate">기록 날짜</label><input type="date" id="foodDate">
+        <form id="foodForm">
+          <label for="mealType">식사 구분</label>
+          <select id="mealType"><option>아침</option><option>점심</option><option>저녁</option><option>간식</option></select>
+          <label for="foodName">음식명</label><input id="foodName" required maxlength="80" placeholder="예: 구내식당 백반">
+          <div class="two-cols">
+            <div><label for="foodCalories">칼로리 (kcal)</label><input id="foodCalories" type="number" min="0" max="10000" required placeholder="예: 650"></div>
+            <div><label for="foodProtein">단백질 (g)</label><input id="foodProtein" type="number" min="0" max="500" step="0.1" required placeholder="예: 30"></div>
+          </div>
+          <button class="primary-btn" type="submit">식단 추가</button>
+        </form>
+      </div>
+      <div class="section-heading"><h2>하루 합계</h2><span id="foodDayLabel" class="muted"></span></div>
+      <div class="stats-grid compact">
+        <article class="stat-card"><p>칼로리</p><strong id="foodTotalCalories">0 kcal</strong><span class="subline">목표 2,300 kcal</span></article>
+        <article class="stat-card"><p>단백질</p><strong id="foodTotalProtein">0 g</strong><span class="subline">목표 140 g</span></article>
+      </div>
+      <div id="foodList" class="record-list"></div>
+    </section>
+
+    <section class="view" id="view-run">
+      <div class="page-title"><p class="eyebrow">TRAINING LOG</p><h2>러닝 기록</h2><p class="muted">거리와 시간을 입력하면 평균 페이스를 계산해요.</p></div>
+      <div class="panel">
+        <form id="runForm">
+          <label for="runDate">운동 날짜</label><input type="date" id="runDate" required>
+          <label for="runType">훈련 종류</label><select id="runType"><option>이지런</option><option>롱런</option><option>템포런</option><option>인터벌</option><option>회복런</option><option>걷기</option><option>기타</option></select>
+          <div class="two-cols">
+            <div><label for="runDistance">거리 (km)</label><input id="runDistance" type="number" min="0" max="200" step="0.01" required placeholder="예: 7.5"></div>
+            <div><label for="runMinutes">시간 (분)</label><input id="runMinutes" type="number" min="0" max="2000" step="0.1" placeholder="예: 48"></div>
+          </div>
+          <label for="runNote">메모 (선택)</label><input id="runNote" maxlength="160" placeholder="컨디션, 코스 등">
+          <button class="primary-btn" type="submit">러닝 저장</button>
+        </form>
+      </div>
+      <div class="stats-grid compact">
+        <article class="stat-card"><p>이번 달</p><strong id="runMonthTotal">0 km</strong></article>
+        <article class="stat-card"><p>이번 주</p><strong id="runWeekTotal">0 km</strong></article>
+      </div>
+      <div class="section-heading"><h2>운동 기록</h2><span id="runRecordCount" class="muted"></span></div>
+      <div id="runList" class="record-list"></div>
+    </section>
+
+    <section class="view" id="view-weight">
+      <div class="page-title"><p class="eyebrow">WEIGHT TRACKER</p><h2>체중 기록</h2><p class="muted">가능하면 아침 기상 후 같은 조건에서 측정하세요.</p></div>
+      <div class="panel">
+        <form id="weightForm">
+          <label for="weightDate">기록 날짜</label><input type="date" id="weightDate" required>
+          <label for="weightValue">체중 (kg)</label><input id="weightValue" type="number" min="30" max="300" step="0.1" required placeholder="예: 87.6">
+          <button class="primary-btn" type="submit">체중 저장</button>
+        </form>
+      </div>
+      <div class="hero small-hero">
+        <p class="muted">목표 체중</p><strong>75.0 <small>kg</small></strong>
+        <div class="progress-track"><div id="weightPageProgress" class="progress-fill"></div></div>
+        <p id="weightPageText" class="progress-caption"></p>
+      </div>
+      <div class="section-heading"><h2>최근 기록</h2><span class="muted">최근 30개</span></div>
+      <div id="weightList" class="record-list"></div>
+    </section>
+
+    <section class="view" id="view-plan">
+      <div class="page-title"><p class="eyebrow">PLAN & REVIEW</p><h2>계획과 백업</h2><p class="muted">계획은 가이드이며 몸 상태에 따라 조절하세요.</p></div>
+      <div class="panel">
+        <h3>기본 목표</h3>
+        <div class="goal-row"><span>목표 체중</span><strong>75kg</strong></div>
+        <div class="goal-row"><span>목표일</span><strong>2027.02.28</strong></div>
+        <div class="goal-row"><span>일일 기본 열량</span><strong>2,300 kcal</strong></div>
+        <div class="goal-row"><span>일일 단백질</span><strong>140g</strong></div>
+        <div class="goal-row"><span>주간 러닝</span><strong>주 4회</strong></div>
+        <p class="fine-print">칼로리와 감량 속도는 추정치입니다. 롱런 날에는 연료 보충을 우선하고, 지속적인 피로·어지럼증·운동 능력 저하가 나타나면 섭취량과 훈련량을 조정하세요.</p>
+      </div>
+      <div class="panel">
+        <h3>주간 체크리스트</h3>
+        <p class="muted small">선택한 날짜가 포함된 주간 기록입니다.</p>
+        <label for="checkDate">기준 날짜</label><input type="date" id="checkDate">
+        <div id="weeklyChecks" class="check-card"></div>
+      </div>
+      <div class="panel">
+        <h3>데이터 백업 및 복원</h3>
+        <p class="muted small">기기 내부 저장은 브라우저 데이터 삭제 시 사라질 수 있어요. 주기적으로 JSON 백업 파일을 내려받아 보관하세요.</p>
+        <button class="primary-btn" id="backupBtn" type="button">백업 파일 내보내기</button>
+        <label for="restoreFile" class="file-label">백업 파일 가져오기 (JSON)</label>
+        <input id="restoreFile" type="file" accept=".json,application/json">
+        <button class="danger-btn" id="clearBtn" type="button">모든 기록 삭제</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="주요 메뉴">
+    <button class="nav-item active" data-view="home"><span>⌂</span>홈</button>
+    <button class="nav-item" data-view="food"><span>＋</span>식단</button>
+    <button class="nav-item" data-view="run"><span>↗</span>러닝</button>
+    <button class="nav-item" data-view="weight"><span>⚖</span>체중</button>
+    <button class="nav-item" data-view="plan"><span>☷</span>계획</button>
+  </nav>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
